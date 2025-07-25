@@ -1,11 +1,9 @@
 const express = require('express');
-const expositorControllerApi = require ('../controllers/expositorControllerApi')
+expositorControllerApi = require('../controllers/expositorControllerApi');
 const router = express.Router();
 
+router.post('/', expositorControllerApi.criarExpositor )
 
 
-
-
-router.post('/', expositorControllerApi.cadastrar )
 
 module.exports = router;
