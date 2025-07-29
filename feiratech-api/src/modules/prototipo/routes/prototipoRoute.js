@@ -1,11 +1,19 @@
 const express = require('express');
-const prototipoControllerApi = require('../controllers/prototipoControllerApi');
+const PrototipoController = require('../controllers/prototipoController')
 const router = express.Router();
 
 
 
 
 
-router.post('/', prototipoControllerApi.criarPrototipo);
+router.post('/', PrototipoController.criarPrototipo);
+
+router.get('/', PrototipoController.listarPrototipos);
+
+router.get('/:id', PrototipoController.buscarPrototipoPorID);
+
+router.put('/:id', PrototipoController.atualizarPrototipo);
+
+router.delete('/:id', PrototipoController.deletarPrototipo);
 
 module.exports = router;

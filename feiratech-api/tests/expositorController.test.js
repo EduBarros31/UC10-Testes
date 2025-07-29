@@ -1,10 +1,10 @@
 const expositorModel = require('../src/modules/expositor/models/expositorModel');
-const { sequelize } = require('../src/config/configDB');
+const sequelize = require('../src/config/configDB');
 const app = require('../index');
 const request = require('supertest');
 
 beforeAll(async () => {
-    await sequelize.sync({ force: true });
+    await sequelize.authenticate();
 })
 
 afterAll(async () => {

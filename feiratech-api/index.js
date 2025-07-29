@@ -1,7 +1,8 @@
 const express = require('express');
-const { sequelize } = require('./src/config/configDB');
+const  { Sequelize }  = require('../feiratech-api/src/config/configDB')
 require('dotenv').config();
 const expositorRoutes = require('./src/modules/expositor/routes/expositorRoute')
+const prototipoRoutes = require('./src/modules/prototipo/routes/prototipoRoute');
 
 
 const app = express();
@@ -9,8 +10,9 @@ const PORT = process.env.PORT
 app.use(express.json());
 
 app.use('/expositor', expositorRoutes);
+app.use('/prototipo', prototipoRoutes);
 
-// await sequelize.sync({ force: true })
+
 
 
 app.listen(PORT, ()=> {
