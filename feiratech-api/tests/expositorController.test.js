@@ -4,19 +4,19 @@ const app = require('../index');
 const request = require('supertest');
 
 beforeAll(async () => {
-    await sequelize.authenticate();
+    await sequelize.authenticate();  // cria as tabelas antes de iniciar os testes
 })
 
 afterAll(async () => {
-    await sequelize.close();
+    await sequelize.close();  // encerra a conexão com o banco ao encerrar a switch de testes
 })
 
 afterEach(async () => {
     // Truncate the table
-    await expositorModel.truncate();
+    await expositorModel.truncate(); //cria a tabela antes de iniciar os testes
 })
 
-describe('Testes de  Expositor - POST', () => { 
+describe('Testes de endpoint - POST/expositor', () => { 
    test('Criar expositor com sucesso', async () => {  
      const res = await request(app).post('/expositor').send({
         nome:'Feira Tech',  
@@ -24,7 +24,10 @@ describe('Testes de  Expositor - POST', () => {
         instituicao: 'SEnac'
      })
         expect(res.status).toBe(201);
+        expect(res.body).toHaveProperty('nome');
         expect(res.body.msg).toBe('Expositor criado com sucesso');
+        expect(res.body.email).toBe('feira123@gmail.com')
+        expect(res.body.instituicao).toBe('SEnac');
     })
     test('Verificar email duplicado', async () => { 
       const res = await request(app).post('/expositor').send({
