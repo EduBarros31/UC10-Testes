@@ -1,0 +1,25 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 5
+
+scenarios:
+  - name: "Teste de carga para produto"
+    flow:
+      - get:
+          url: "/produto"
+      - post:
+          url: "/produto"
+          json:
+            nome: "Feijao"
+            preco: 100.00
+            estoque: 1
+          capture:
+            - json: "$.produto.cod_produto"
+              as: "produtoId"
+      - get:
+          url: "/produto/{{ produtoId }}"
+          capture:
+            - json: "$.produto.nome"
+              as: "produtoNome"

@@ -1,5 +1,5 @@
-const Produto = require('../src/modules/produto/models/produtoModel');
-const { sequelize } = require('../src/config/configDB');
+const Produto = require('../modules/produto/models/produtoModel');
+const { sequelize } = require('../config/configDB');
 const app = require('./index');
 const request = require('supertest')
 

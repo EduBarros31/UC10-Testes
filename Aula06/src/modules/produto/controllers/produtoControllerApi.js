@@ -1,4 +1,3 @@
-const produtoModel = require('../models/produtoModel');
 const ProdutoModel = require('../models/produtoModel');
 
 class ProdutoControlerApi {

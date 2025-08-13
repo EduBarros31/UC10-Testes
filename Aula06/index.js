@@ -1,7 +1,7 @@
 const express = require('express');
-const { sequelize } = require('./src/config/configDB');
+const { Sequelize } = require('./src/config/configDB');
 require('dotenv').config();
-const produtoRoutes = require('./src/moduls')
+const produtoRoutes = require('./src/modules/produto/routes/produtoRoute')
 
 const app = express();
 const PORT = process.env.PORT
@@ -9,6 +9,7 @@ app.use(express.json());
 
 // await sequelize.sync({ force: true })
 
+app.use('/produto', produtoRoutes)
 
 app.listen(PORT, ()=> {
     console.log(`Servidor rodando na porta ${PORT}`);
