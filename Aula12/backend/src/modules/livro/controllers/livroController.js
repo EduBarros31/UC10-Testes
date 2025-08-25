@@ -1,5 +1,4 @@
 const livroModel = require('../models/livroModel');
-const { Op } = require('sequelize');
 
 const generosLivros = [
   "Romance", "Ficção Científica", "Fantasia", "Mistério", "Suspense",

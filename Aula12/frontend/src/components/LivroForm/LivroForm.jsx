@@ -1,93 +1,148 @@
-import { useState } from "react";
-import api from "../services/api";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import LivroService from '../../services/livroService'; // Importa
 
-export default function LivroForm({ onSave }) {
-  const [form, setForm] = useState({
-    titulo: "",
-    autor: "",
-    ano_publicacao: "",
-    preco: ""
-  });
 
-  const [erro, setErro] = useState("");
+const LivroForm = ({ livroEdit }) => {
+  const [titulo, setTitulo] = useState('');
+  const [autor, setAutor] = useState('');
+  const [ano_publicacao, setAnoPublicacao] = useState('');
+  const [genero, setGenero] = useState('');
+  const [preco, setPreco] = useState('');
+  const navigate = useNavigate();
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const generos= [
+    "Romance",
+    "Ficção Científica",
+    "Fantasia",
+    "Mistério",
+    "Suspense",
+    "Terror",
+    "Aventura",
+    "Drama",
+    "Histórico",
+    "Biografia",
+    "Autobiografia",
+    "Poesia",
+    "Humor",
+    "Literatura Clássica",
+    "Literatura Contemporânea",
+    "Infantojuvenil",
+    "Young Adult (YA)",
+    "Distopia",
+    "Realismo Mágico",
+    "Crônicas",
+    "Ensaios",
+    "Autoajuda",
+    "Espiritualidade",
+    "Religião",
+    "Filosofia",
+    "Psicologia",
+    "Ciências Sociais",
+    "Política",
+    "Economia",
+    "Educação",
+    "Tecnologia",
+    "Negócios",
+    "Direito",
+    "Medicina",
+    "Ecologia",
+    "Viagens",
+    "Gastronomia",
+    "Arte",
+    "Fotografia"
+];
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    // validação simples
-    if (!form.titulo || !form.autor || !form.ano_publicacao || !form.preco) {
-      setErro("Todos os campos são obrigatórios.");
-      return;
+  useEffect(() => {
+    if (livroEdit) {
+      setTitulo(livroEdit.titulo);
+      setAutor(livroEdit.autor);
+      setAnoPublicacao(livroEdit.ano_publicacao);
+      setGenero(livroEdit.genero);
+      setPreco(livroEdit.preco);
     }
+  }, [livroEdit]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const livro = {
+      titulo,
+      autor,
+      ano_publicacao: parseInt(ano_publicacao),
+      genero,
+      preco: parseFloat(preco)
+    };
 
     try {
-      const res = await api.post("/livros", {
-        titulo: form.titulo,
-        autor: form.autor,
-        ano_publicacao: Number(form.ano_publicacao),
-        preco: Number(form.preco)
-      });
-
-      onSave(res.data); // chama função do parent (Cadastro.jsx)
-      setForm({ titulo: "", autor: "", ano_publicacao: "", preco: "" }); // limpa formulário
-      setErro("");
-    } catch (err) {
-      console.error("Erro ao criar livro:", err);
-      setErro("Não foi possível cadastrar o livro.");
+      if (livroEdit) {
+        await LivroService.updateLivro(livroEdit.id, livro); // Atualizar livro
+      } else {
+       
+        await LivroService.addLivro(livro); // Criar novo livro
+      }
+      navigate('/');
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded shadow-md">
-      {erro && <p className="text-red-600 mb-2">{erro}</p>}
-      
-      <input
-        type="text"
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <input 
+        type="text" 
+        placeholder="Título" 
         name="titulo"
-        value={form.titulo}
-        onChange={handleChange}
-        placeholder="Título"
-        className="block w-full p-2 mb-2 border rounded"
+        value={titulo} 
+        onChange={(e) => setTitulo(e.target.value)} 
+        className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
       />
-
-      <input
+      <input 
         type="text"
-        name="autor"
-        value={form.autor}
-        onChange={handleChange}
-        placeholder="Autor"
-        className="block w-full p-2 mb-2 border rounded"
+        name="autor" 
+        placeholder="Autor" 
+        value={autor} 
+        onChange={(e) => setAutor(e.target.value)} 
+        className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
       />
-
-      <input
-        type="number"
+      <input 
+        type="number" 
         name="ano_publicacao"
-        value={form.ano_publicacao}
-        onChange={handleChange}
-        placeholder="Ano de publicação"
-        className="block w-full p-2 mb-2 border rounded"
+        placeholder="Ano de Publicação" 
+        value={ano_publicacao} 
+        onChange={(e) => setAnoPublicacao(e.target.value)} 
+        className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
       />
-
-      <input
-        type="number"
-        step="0.01"
-        name="preco"
-        value={form.preco}
-        onChange={handleChange}
-        placeholder="Preço"
-        className="block w-full p-2 mb-2 border rounded"
-      />
-
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      <select 
+        value={genero} 
+        name="genero"
+        onChange={(e) => setGenero(e.target.value)} 
+        className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
       >
-        Salvar
+        {generos.map((gen, index) => (
+          <option key={index} value={gen}>{gen}</option>
+        ))}
+      </select>
+      <input 
+        type="number" 
+        name="preco"
+        placeholder="Preço" 
+        value={preco} 
+        onChange={(e) => setPreco(e.target.value)} 
+        className="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+      <button 
+        type="submit" 
+        className="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        {livroEdit ? 'Atualizar Livro' : 'Adicionar Livro'}
       </button>
     </form>
   );
-}
+};
+
+export default LivroForm;
